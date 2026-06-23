@@ -63,6 +63,20 @@ class FirebaseRepository {
             .get().await()
             .documents.firstOrNull()?.data
 
+    suspend fun searchUserByUsername(username: String): Map<String, Any>? =
+        db.collection("users")
+            .whereEqualTo("username", username.lowercase())
+            .limit(1)
+            .get().await()
+            .documents.firstOrNull()?.data
+
+    /** Search by email or @username — returns the first match found. */
+    suspend fun searchUser(query: String): Map<String, Any>? =
+        if (query.contains("@") && query.contains("."))
+            searchUserByEmail(query)
+        else
+            searchUserByUsername(query.removePrefix("@"))
+
     // ── Sending messages ──────────────────────────────────────────────────────
 
     suspend fun sendTextMessage(message: FirebaseMessage) {

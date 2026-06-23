@@ -18,7 +18,7 @@ service cloud.firestore {
       allow update: if request.auth != null
                     && request.auth.uid == resource.data.recipientId
                     && request.resource.data.diff(resource.data).affectedKeys()
-                       .hasOnly(['consumed', 'consumedAt', 'status']);
+                       .hasOnly(['consumed', 'consumedAt', 'status', 'voiceBase64']);
       allow delete: if false; // cleanup done server-side by GitHub Actions
     }
   }

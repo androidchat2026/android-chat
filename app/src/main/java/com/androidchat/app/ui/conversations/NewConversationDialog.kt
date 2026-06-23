@@ -4,14 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
+import com.androidchat.app.data.remote.FirebaseRepository
 import com.androidchat.app.databinding.DialogNewConversationBinding
 import com.androidchat.app.utils.toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
 
 /**
- * Bottom-sheet that lets the user find another registered user by email
- * before opening a chat with them.
+ * Bottom-sheet: find another user by email address OR @username.
+ *
+ * Email   — contains "@" and "."  → searched against the "email" field
+ * Username — everything else      → searched against the "username" field
+ *            (leading "@" is stripped automatically)
  */
 class NewConversationDialog(
     private val onUserFound: (uid: String, name: String, email: String) -> Unit
@@ -19,7 +24,7 @@ class NewConversationDialog(
 
     private var _binding: DialogNewConversationBinding? = null
     private val binding get() = _binding!!
-    private val db = FirebaseFirestore.getInstance()
+    private val firebase = FirebaseRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -30,42 +35,42 @@ class NewConversationDialog(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.btnSearch.setOnClickListener {
-            val email = binding.etEmail.text.toString().trim()
-            if (email.isEmpty()) {
-                requireContext().toast("Enter an email address")
+            val query = binding.etEmail.text.toString().trim()
+            if (query.isEmpty()) {
+                requireContext().toast("Enter an email or @username")
                 return@setOnClickListener
             }
-            searchUser(email)
+            searchUser(query)
         }
     }
 
-    private fun searchUser(email: String) {
+    private fun searchUser(query: String) {
         binding.progressBar.visibility = View.VISIBLE
         binding.btnSearch.isEnabled = false
 
-        db.collection("users")
-            .whereEqualTo("email", email)
-            .limit(1)
-            .get()
-            .addOnSuccessListener { result ->
+        lifecycleScope.launch {
+            try {
+                val data = firebase.searchUser(query)
                 binding.progressBar.visibility = View.GONE
                 binding.btnSearch.isEnabled = true
 
-                val doc = result.documents.firstOrNull()
-                if (doc == null) {
-                    requireContext().toast("No user found with that email")
-                    return@addOnSuccessListener
+                if (data == null) {
+                    val label = if (query.contains("@") && query.contains(".")) "email" else "username"
+                    requireContext().toast("No user found with that $label")
+                    return@launch
                 }
-                val uid  = doc.getString("uid")  ?: doc.id
-                val name = doc.getString("displayName") ?: email
+
+                val uid   = data["uid"] as? String ?: return@launch
+                val name  = data["displayName"] as? String ?: query
+                val email = data["email"] as? String ?: ""
                 onUserFound(uid, name, email)
                 dismiss()
-            }
-            .addOnFailureListener { e ->
+            } catch (e: Exception) {
                 binding.progressBar.visibility = View.GONE
                 binding.btnSearch.isEnabled = true
                 requireContext().toast(e.message ?: "Search failed")
             }
+        }
     }
 
     override fun onDestroyView() {

@@ -31,13 +31,18 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun attemptRegister() {
-        val name = binding.etName.text.toString().trim()
-        val email = binding.etEmail.text.toString().trim()
+        val name     = binding.etName.text.toString().trim()
+        val username = binding.etUsername.text.toString().trim().lowercase()
+        val email    = binding.etEmail.text.toString().trim()
         val password = binding.etPassword.text.toString()
-        val confirm = binding.etConfirmPassword.text.toString()
+        val confirm  = binding.etConfirmPassword.text.toString()
 
-        if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
+        if (name.isEmpty() || username.isEmpty() || email.isEmpty() || password.isEmpty()) {
             toast("Please fill in all fields")
+            return
+        }
+        if (!username.matches(Regex("^[a-z0-9_.]{3,30}$"))) {
+            toast("Username: 3–30 characters, letters/numbers/._  only")
             return
         }
         if (password != confirm) {
@@ -52,24 +57,33 @@ class RegisterActivity : AppCompatActivity() {
         setLoading(true)
         lifecycleScope.launch {
             try {
+                // Check username uniqueness before creating the account
+                val taken = db.collection("users")
+                    .whereEqualTo("username", username)
+                    .limit(1).get().await()
+                if (!taken.isEmpty) {
+                    toast("Username @$username is already taken")
+                    setLoading(false)
+                    return@launch
+                }
+
                 val result = auth.createUserWithEmailAndPassword(email, password).await()
                 val user = result.user ?: return@launch
 
-                // Update display name
                 user.updateProfile(
                     UserProfileChangeRequest.Builder().setDisplayName(name).build()
                 ).await()
 
-                // Save user profile to Firestore
                 val fcmToken = runCatching { FirebaseMessaging.getInstance().token.await() }.getOrDefault("")
                 db.collection("users").document(user.uid).set(
                     mapOf(
-                        "uid" to user.uid,
+                        "uid"         to user.uid,
                         "displayName" to name,
-                        "email" to email,
-                        "fcmToken" to fcmToken,
-                        "isOnline" to true,
-                        "createdAt" to System.currentTimeMillis()
+                        "username"    to username,
+                        "email"       to email,
+                        "fcmToken"    to fcmToken,
+                        "isOnline"    to true,
+                        "createdAt"   to System.currentTimeMillis()
                     )
                 ).await()
 
