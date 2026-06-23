@@ -56,28 +56,33 @@ class RegisterActivity : AppCompatActivity() {
 
         setLoading(true)
         lifecycleScope.launch {
+            var createdUser: com.google.firebase.auth.FirebaseUser? = null
             try {
-                // Check username uniqueness before creating the account
+                // 1. Create auth account first — then we are authenticated for Firestore queries
+                val result = auth.createUserWithEmailAndPassword(email, password).await()
+                createdUser = result.user ?: return@launch
+
+                // 2. Check username uniqueness (now authenticated — no permission error)
                 val taken = db.collection("users")
                     .whereEqualTo("username", username)
                     .limit(1).get().await()
                 if (!taken.isEmpty) {
+                    createdUser.delete().await()   // roll back the auth account
                     toast("Username @$username is already taken")
                     setLoading(false)
                     return@launch
                 }
 
-                val result = auth.createUserWithEmailAndPassword(email, password).await()
-                val user = result.user ?: return@launch
-
-                user.updateProfile(
+                // 3. Save display name to Firebase Auth profile
+                createdUser.updateProfile(
                     UserProfileChangeRequest.Builder().setDisplayName(name).build()
                 ).await()
 
+                // 4. Save full profile to Firestore
                 val fcmToken = runCatching { FirebaseMessaging.getInstance().token.await() }.getOrDefault("")
-                db.collection("users").document(user.uid).set(
+                db.collection("users").document(createdUser.uid).set(
                     mapOf(
-                        "uid"         to user.uid,
+                        "uid"         to createdUser.uid,
                         "displayName" to name,
                         "username"    to username,
                         "email"       to email,
@@ -90,6 +95,8 @@ class RegisterActivity : AppCompatActivity() {
                 startActivity(Intent(this@RegisterActivity, ConversationsActivity::class.java))
                 finishAffinity()
             } catch (e: Exception) {
+                // If anything after account creation fails, clean up the orphan auth account
+                runCatching { createdUser?.delete()?.await() }
                 toast(e.message ?: "Registration failed", long = true)
             } finally {
                 setLoading(false)

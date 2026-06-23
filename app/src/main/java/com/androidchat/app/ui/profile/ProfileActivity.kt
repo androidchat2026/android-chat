@@ -25,9 +25,17 @@ class ProfileActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.apply { title = "Profile"; setDisplayHomeAsUpEnabled(true) }
 
-        val user = auth.currentUser
-        binding.etName.setText(user?.displayName)
-        binding.tvEmail.text = user?.email
+        val user = auth.currentUser ?: return
+        binding.etName.setText(user.displayName)
+        binding.tvEmail.setText(user.email)
+
+        // Load username from Firestore
+        lifecycleScope.launch {
+            try {
+                val doc = db.collection("users").document(user.uid).get().await()
+                binding.etUsername.setText(doc.getString("username") ?: "")
+            } catch (_: Exception) {}
+        }
 
         binding.btnSave.setOnClickListener { saveProfile() }
     }
