@@ -24,6 +24,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnLogin.setOnClickListener { attemptLogin() }
+        binding.tvForgotPassword.setOnClickListener { showForgotPasswordDialog() }
         binding.tvRegister.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
@@ -56,6 +57,39 @@ class LoginActivity : AppCompatActivity() {
                 finishAffinity()
             } catch (e: Exception) {
                 toast(e.message ?: "Login failed", long = true)
+            } finally {
+                setLoading(false)
+            }
+        }
+    }
+
+    private fun showForgotPasswordDialog() {
+        val email = binding.etEmail.text.toString().trim()
+        val input = com.google.android.material.textfield.TextInputEditText(this)
+        input.setText(email)
+        input.inputType = android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+
+        AlertDialog.Builder(this)
+            .setTitle("Reset Password")
+            .setMessage("Enter your email address and we will send you a password reset link.")
+            .setView(input)
+            .setPositiveButton("Send Reset Link") { _, _ ->
+                val resetEmail = input.text.toString().trim()
+                if (resetEmail.isEmpty()) { toast("Please enter your email"); return@setPositiveButton }
+                sendPasswordReset(resetEmail)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun sendPasswordReset(email: String) {
+        setLoading(true)
+        lifecycleScope.launch {
+            try {
+                auth.sendPasswordResetEmail(email).await()
+                toast("Password reset email sent to $email — check your inbox.", long = true)
+            } catch (e: Exception) {
+                toast(e.message ?: "Failed to send reset email", long = true)
             } finally {
                 setLoading(false)
             }
