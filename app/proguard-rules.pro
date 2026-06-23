@@ -1,0 +1,5 @@
+-keepattributes Signature
+-keepattributes *Annotation*
+-keepclassmembers class * extends androidx.room.RoomDatabase { abstract *; }
+-keep class com.androidchat.app.data.** { *; }
+-keep class com.google.firebase.** { *; }

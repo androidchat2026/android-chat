@@ -1,0 +1,16 @@
+{
+  "name": "android-chat-firebase-cleanup",
+  "version": "1.0.0",
+  "description": "Daily Firebase cleanup script for Android Chat app",
+  "main": "firebase-cleanup.js",
+  "scripts": {
+    "cleanup": "node firebase-cleanup.js",
+    "test": "echo \"No tests\" && exit 0"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

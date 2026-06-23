@@ -1,0 +1,30 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "messages",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "recipientId", "order": "ASCENDING" },
+        { "fieldPath": "consumed",    "order": "ASCENDING" },
+        { "fieldPath": "timestamp",   "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "messages",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "consumed",    "order": "ASCENDING" },
+        { "fieldPath": "consumedAt",  "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "messages",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "consumed",   "order": "ASCENDING" },
+        { "fieldPath": "timestamp",  "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

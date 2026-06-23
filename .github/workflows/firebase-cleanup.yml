@@ -1,0 +1,43 @@
+name: Firebase Daily Cleanup
+
+# Runs every 24 hours at 02:00 UTC.
+# Deletes:
+#   - Firestore /messages where consumed=true AND consumedAt > 24h ago
+#   - Firestore /messages where consumed=false AND timestamp > 48h ago
+#   - Firebase Storage voice_notes/ blobs older than 24h (safety net)
+
+on:
+  schedule:
+    - cron: '0 2 * * *'    # 02:00 UTC daily
+  workflow_dispatch:         # manual trigger from the Actions tab
+
+jobs:
+  cleanup:
+    name: Clean temporary Firebase data
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: scripts/package.json
+
+      - name: Install dependencies
+        working-directory: scripts
+        run: npm install
+
+      - name: Run Firebase cleanup
+        working-directory: scripts
+        env:
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+        run: node firebase-cleanup.js
+
+      - name: Report result
+        if: always()
+        run: echo "Cleanup job finished with status ${{ job.status }} at $(date -u)"

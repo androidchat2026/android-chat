@@ -1,0 +1,42 @@
+## Android gitignore
+
+# Gradle files
+.gradle/
+build/
+**/build/
+
+# Android Studio
+.idea/
+*.iml
+*.iws
+*.ipr
+local.properties
+
+# Generated files
+app/src/main/java/com/androidchat/app/BuildConfig.java
+
+# Keystore / signing (NEVER commit these)
+*.jks
+*.keystore
+release.properties
+
+# Firebase — do NOT commit real credentials
+# app/google-services.json   <-- add to gitignore if storing sensitive data
+# Keep the placeholder but ignore real one:
+# app/google-services.json
+
+# GitHub Actions secrets are set in repo Settings, not committed
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Node (cleanup script)
+node_modules/
+npm-debug.log*
+package-lock.json
