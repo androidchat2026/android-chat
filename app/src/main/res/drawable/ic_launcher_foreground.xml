@@ -1,28 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Launcher foreground — two overlapping speech bubbles on a transparent background.
+  Viewport 108×108 (Android adaptive icon standard).
+  Safe zone: content kept inside the inner ~72dp (18–90).
+  Blue bubble is behind (upper-right); green bubble is in front (lower-left).
+  No fill on root — background is fully transparent.
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Outer chat bubble -->
+    <!-- ── Blue bubble glow (outer halo, semi-transparent) ─────────────────── -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M20,18 L88,18 C92.4,18 96,21.6 96,26 L96,66 C96,70.4 92.4,74 88,74 L40,74 L24,90 L24,74 L20,74 C15.6,74 12,70.4 12,66 L12,26 C12,21.6 15.6,18 20,18 Z" />
+        android:fillColor="#5500CFFF"
+        android:pathData="M34,10 L88,10 Q96,10 96,18 L96,52 Q96,60 88,60 L42,60 L24,76 L34,60 Q26,60 26,52 L26,18 Q26,10 34,10 Z" />
 
-    <!-- Three dots — left -->
+    <!-- ── Blue bubble main ────────────────────────────────────────────────── -->
     <path
-        android:fillColor="#1E88E5"
-        android:pathData="M36,41 C38.76,41 41,43.24 41,46 C41,48.76 38.76,51 36,51 C33.24,51 31,48.76 31,46 C31,43.24 33.24,41 36,41 Z" />
+        android:fillColor="#00BFFF"
+        android:pathData="M38,14 L84,14 Q92,14 92,22 L92,48 Q92,56 84,56 L42,56 L28,72 L38,56 Q30,56 30,48 L30,22 Q30,14 38,14 Z" />
 
-    <!-- Three dots — center -->
+    <!-- ── Blue bubble inner highlight (top-left shine) ───────────────────── -->
     <path
-        android:fillColor="#1E88E5"
-        android:pathData="M54,41 C56.76,41 59,43.24 59,46 C59,48.76 56.76,51 54,51 C51.24,51 49,48.76 49,46 C49,43.24 51.24,41 54,41 Z" />
+        android:fillColor="#4AFFFFFF"
+        android:pathData="M40,16 L70,16 Q76,16 78,20 Q60,18 40,22 Z" />
 
-    <!-- Three dots — right -->
+    <!-- ── Green bubble glow (outer halo, semi-transparent) ───────────────── -->
     <path
-        android:fillColor="#1E88E5"
-        android:pathData="M72,41 C74.76,41 77,43.24 77,46 C77,48.76 74.76,51 72,51 C69.24,51 67,48.76 67,46 C67,43.24 69.24,41 72,41 Z" />
+        android:fillColor="#5532CD32"
+        android:pathData="M14,28 L64,28 Q74,28 74,38 L74,68 Q74,78 64,78 L24,78 L6,96 L16,78 Q6,78 6,68 L6,38 Q6,28 14,28 Z" />
+
+    <!-- ── Green bubble main ───────────────────────────────────────────────── -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M18,32 L62,32 Q70,32 70,40 L70,64 Q70,72 62,72 L24,72 L8,88 L18,72 Q10,72 10,64 L10,40 Q10,32 18,32 Z" />
+
+    <!-- ── Green bubble inner highlight ───────────────────────────────────── -->
+    <path
+        android:fillColor="#4AFFFFFF"
+        android:pathData="M20,34 L50,34 Q56,34 58,38 Q42,36 20,40 Z" />
 
 </vector>
