@@ -1,12 +1,11 @@
 package com.androidchat.app.ui.auth
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.androidchat.app.databinding.ActivityRegisterBinding
-import com.androidchat.app.ui.conversations.ConversationsActivity
 import com.androidchat.app.utils.toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -58,16 +57,16 @@ class RegisterActivity : AppCompatActivity() {
         lifecycleScope.launch {
             var createdUser: com.google.firebase.auth.FirebaseUser? = null
             try {
-                // 1. Create auth account first — then we are authenticated for Firestore queries
+                // 1. Create auth account
                 val result = auth.createUserWithEmailAndPassword(email, password).await()
                 createdUser = result.user ?: return@launch
 
-                // 2. Check username uniqueness (now authenticated — no permission error)
+                // 2. Check username uniqueness
                 val taken = db.collection("users")
                     .whereEqualTo("username", username)
                     .limit(1).get().await()
                 if (!taken.isEmpty) {
-                    createdUser.delete().await()   // roll back the auth account
+                    createdUser.delete().await()
                     toast("Username @$username is already taken")
                     setLoading(false)
                     return@launch
@@ -78,30 +77,46 @@ class RegisterActivity : AppCompatActivity() {
                     UserProfileChangeRequest.Builder().setDisplayName(name).build()
                 ).await()
 
-                // 4. Save full profile to Firestore
+                // 4. Save profile to Firestore
                 val fcmToken = runCatching { FirebaseMessaging.getInstance().token.await() }.getOrDefault("")
                 db.collection("users").document(createdUser.uid).set(
                     mapOf(
-                        "uid"         to createdUser.uid,
-                        "displayName" to name,
-                        "username"    to username,
-                        "email"       to email,
-                        "fcmToken"    to fcmToken,
-                        "isOnline"    to true,
-                        "createdAt"   to System.currentTimeMillis()
+                        "uid"              to createdUser.uid,
+                        "displayName"      to name,
+                        "username"         to username,
+                        "email"            to email,
+                        "fcmToken"         to fcmToken,
+                        "isOnline"         to false,
+                        "emailVerified"    to false,
+                        "createdAt"        to System.currentTimeMillis()
                     )
                 ).await()
 
-                startActivity(Intent(this@RegisterActivity, ConversationsActivity::class.java))
-                finishAffinity()
+                // 5. Send verification email
+                createdUser.sendEmailVerification().await()
+
+                // 6. Sign out — user must verify email before logging in
+                auth.signOut()
+
+                // 7. Show confirmation dialog then go back to Login
+                setLoading(false)
+                showVerificationDialog(email)
+
             } catch (e: Exception) {
-                // If anything after account creation fails, clean up the orphan auth account
                 runCatching { createdUser?.delete()?.await() }
                 toast(e.message ?: "Registration failed", long = true)
-            } finally {
                 setLoading(false)
             }
         }
+    }
+
+    private fun showVerificationDialog(email: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Verify Your Email")
+            .setMessage("A verification link has been sent to:\n\n$email\n\nPlease check your inbox (and spam folder) and click the link to activate your account before logging in.")
+            .setPositiveButton("Go to Login") { _, _ -> finish() }
+            .setCancelable(false)
+            .show()
     }
 
     private fun setLoading(loading: Boolean) {

@@ -12,10 +12,16 @@ import com.google.firebase.auth.FirebaseAuth
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val next = if (FirebaseAuth.getInstance().currentUser != null)
-            ConversationsActivity::class.java
-        else
-            LoginActivity::class.java
+        val user = FirebaseAuth.getInstance().currentUser
+        val next = when {
+            user == null -> LoginActivity::class.java
+            !user.isEmailVerified -> {
+                // Signed in but never verified — sign out and ask them to verify
+                FirebaseAuth.getInstance().signOut()
+                LoginActivity::class.java
+            }
+            else -> ConversationsActivity::class.java
+        }
         startActivity(Intent(this, next))
         finish()
     }

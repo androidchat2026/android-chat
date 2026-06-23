@@ -3,6 +3,7 @@ package com.androidchat.app.ui.auth
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.androidchat.app.databinding.ActivityLoginBinding
@@ -40,11 +41,47 @@ class LoginActivity : AppCompatActivity() {
         setLoading(true)
         lifecycleScope.launch {
             try {
-                auth.signInWithEmailAndPassword(email, password).await()
+                val result = auth.signInWithEmailAndPassword(email, password).await()
+                val user = result.user ?: return@launch
+
+                if (!user.isEmailVerified) {
+                    // Block login — offer to resend the verification email
+                    auth.signOut()
+                    setLoading(false)
+                    showUnverifiedDialog(user.email ?: email)
+                    return@launch
+                }
+
                 startActivity(Intent(this@LoginActivity, ConversationsActivity::class.java))
                 finishAffinity()
             } catch (e: Exception) {
                 toast(e.message ?: "Login failed", long = true)
+            } finally {
+                setLoading(false)
+            }
+        }
+    }
+
+    private fun showUnverifiedDialog(email: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Email Not Verified")
+            .setMessage("Please verify your email address before logging in.\n\nCheck your inbox at:\n$email\n\nDidn't receive it?")
+            .setPositiveButton("Resend Email") { _, _ -> resendVerificationEmail(email) }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun resendVerificationEmail(email: String) {
+        val password = binding.etPassword.text.toString()
+        setLoading(true)
+        lifecycleScope.launch {
+            try {
+                val result = auth.signInWithEmailAndPassword(email, password).await()
+                result.user?.sendEmailVerification()?.await()
+                auth.signOut()
+                toast("Verification email resent. Please check your inbox.", long = true)
+            } catch (e: Exception) {
+                toast("Could not resend: ${e.message}", long = true)
             } finally {
                 setLoading(false)
             }
