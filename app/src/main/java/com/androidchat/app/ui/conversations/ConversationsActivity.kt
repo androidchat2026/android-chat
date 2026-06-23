@@ -12,6 +12,7 @@ import com.androidchat.app.databinding.ActivityConversationsBinding
 import com.androidchat.app.ui.auth.LoginActivity
 import com.androidchat.app.ui.chat.ChatActivity
 import com.androidchat.app.ui.profile.ProfileActivity
+import com.androidchat.app.ui.support.SupportActivity
 import com.androidchat.app.utils.Constants
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -109,6 +110,10 @@ class ConversationsActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_profile -> {
                 startActivity(Intent(this, ProfileActivity::class.java))
+                true
+            }
+            R.id.action_support -> {
+                startActivity(Intent(this, SupportActivity::class.java))
                 true
             }
             R.id.action_logout -> {

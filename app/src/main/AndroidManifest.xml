@@ -58,6 +58,10 @@
             android:name=".ui.profile.ProfileActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.support.SupportActivity"
+            android:exported="false" />
+
         <!-- FCM service -->
         <service
             android:name=".service.ChatFirebaseMessagingService"
