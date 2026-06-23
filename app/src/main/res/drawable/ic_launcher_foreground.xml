@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Chat bubble icon for adaptive launcher foreground -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
@@ -9,20 +8,21 @@
     <!-- Outer chat bubble -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M20,18 L88,18 C92.4,18 96,21.6 96,26 L96,66
-                          C96,70.4 92.4,74 88,74 L40,74 L24,90 L24,74
-                          L20,74 C15.6,74 12,70.4 12,66 L12,26
-                          C12,21.6 15.6,18 20,18 Z" />
+        android:pathData="M20,18 L88,18 C92.4,18 96,21.6 96,26 L96,66 C96,70.4 92.4,74 88,74 L40,74 L24,90 L24,74 L20,74 C15.6,74 12,70.4 12,66 L12,26 C12,21.6 15.6,18 20,18 Z" />
 
-    <!-- Three dots — message indicator -->
-    <circle
+    <!-- Three dots — left -->
+    <path
         android:fillColor="#1E88E5"
-        android:cx="36" android:cy="46" android:r="5" />
-    <circle
+        android:pathData="M36,41 C38.76,41 41,43.24 41,46 C41,48.76 38.76,51 36,51 C33.24,51 31,48.76 31,46 C31,43.24 33.24,41 36,41 Z" />
+
+    <!-- Three dots — center -->
+    <path
         android:fillColor="#1E88E5"
-        android:cx="54" android:cy="46" android:r="5" />
-    <circle
+        android:pathData="M54,41 C56.76,41 59,43.24 59,46 C59,48.76 56.76,51 54,51 C51.24,51 49,48.76 49,46 C49,43.24 51.24,41 54,41 Z" />
+
+    <!-- Three dots — right -->
+    <path
         android:fillColor="#1E88E5"
-        android:cx="72" android:cy="46" android:r="5" />
+        android:pathData="M72,41 C74.76,41 77,43.24 77,46 C77,48.76 74.76,51 72,51 C69.24,51 67,48.76 67,46 C67,43.24 69.24,41 72,41 Z" />
 
 </vector>
