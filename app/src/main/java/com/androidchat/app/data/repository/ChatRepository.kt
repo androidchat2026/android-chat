@@ -96,7 +96,7 @@ class ChatRepository(private val context: Context) {
         )
         db.messageDao().insert(entity)
 
-        firebase.uploadAndSendVoiceNote(id, localFile, recipientId, durationMs)
+        firebase.sendVoiceMessage(id, localFile, recipientId, durationMs)
         db.messageDao().updateStatus(id, MessageStatus.SENT)
         updateConversationLastMessage(conversationId, "🎤 Voice note", MessageType.VOICE)
     }
@@ -119,9 +119,9 @@ class ChatRepository(private val context: Context) {
                 val destDir = File(context.filesDir, "voice_notes").apply { mkdirs() }
                 val destFile = File(destDir, "${msg.id}.m4a")
 
-                if (msg.voiceStoragePath != null) {
-                    // Download to device — remote blob is deleted inside downloadVoiceNote()
-                    firebase.downloadVoiceNote(msg.voiceStoragePath, destFile)
+                if (msg.voiceBase64 != null) {
+                    // Decode base64 payload from Firestore directly to device — no Storage needed
+                    firebase.decodeVoiceNote(msg.voiceBase64, destFile)
                 }
 
                 val entity = MessageEntity(

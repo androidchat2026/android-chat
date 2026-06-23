@@ -67,8 +67,8 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:32.7.2')
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
-    implementation 'com.google.firebase:firebase-storage-ktx'
     implementation 'com.google.firebase:firebase-messaging-ktx'
+    // firebase-storage removed: voice notes are base64-encoded in Firestore (free Spark tier)
 
     // Media — voice note recording & playback
     implementation 'androidx.media3:media3-exoplayer:1.2.1'

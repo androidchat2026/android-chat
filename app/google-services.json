@@ -1,28 +1,23 @@
-{
-  "_comment": "PLACEHOLDER — Replace this file with the real google-services.json downloaded from your Firebase project console at https://console.firebase.google.com.",
-  "_steps": [
-    "1. Create a Firebase project at https://console.firebase.google.com",
-    "2. Add an Android app with package name: com.androidchat.app",
-    "3. Download the google-services.json and replace this file",
-    "4. Enable Authentication (Email/Password) in Firebase console",
-    "5. Enable Firestore Database in Firebase console",
-    "6. Enable Firebase Storage in Firebase console",
-    "7. Enable Cloud Messaging (FCM) — enabled by default"
-  ],
+﻿{
   "project_info": {
-    "project_number": "YOUR_PROJECT_NUMBER",
-    "project_id": "YOUR_PROJECT_ID",
-    "storage_bucket": "YOUR_PROJECT_ID.appspot.com"
+    "project_number": "630356920557",
+    "project_id": "android-chat-1ea9b",
+    "storage_bucket": "android-chat-1ea9b.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:YOUR_PROJECT_NUMBER:android:YOUR_APP_ID",
+        "mobilesdk_app_id": "1:630356920557:android:e7ec3ca85955ac48caa4e4",
         "android_client_info": {
           "package_name": "com.androidchat.app"
         }
       },
-      "api_key": [{ "current_key": "YOUR_API_KEY" }],
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBf-jblyQHQQgXI5lErj36furLVupEqVHs"
+        }
+      ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": []

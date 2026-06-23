@@ -1,12 +1,11 @@
 rules_version = '2';
+// Firebase Storage is not used by this app (Spark free plan).
+// Voice notes are base64-encoded inside Firestore documents.
+// This file is kept as a placeholder in case the project is upgraded to Blaze later.
 service firebase.storage {
   match /b/{bucket}/o {
-
-    // Voice notes: sender can upload to recipient's folder; recipient can read/delete
-    match /voice_notes/{recipientId}/{fileName} {
-      allow write: if request.auth != null;
-      allow read, delete: if request.auth != null
-                          && request.auth.uid == recipientId;
+    match /{allPaths=**} {
+      allow read, write: if false;
     }
   }
 }

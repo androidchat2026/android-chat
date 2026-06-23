@@ -14,6 +14,12 @@
  *                                  roles/datastore.user and roles/storage.objectAdmin
  */
 
+/**
+ * NOTE: Firebase Storage is NOT used (Spark free plan).
+ * Voice notes are base64-encoded in Firestore documents and cleared (set to null)
+ * immediately after the recipient decodes them. The Storage cleanup section below
+ * is a no-op but kept in case the project is later upgraded to Blaze.
+ */
 const admin = require('firebase-admin');
 
 const projectId = process.env.FIREBASE_PROJECT_ID;

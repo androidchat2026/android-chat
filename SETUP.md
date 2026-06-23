@@ -1,4 +1,4 @@
-# Android Chat — Setup Guide
+﻿# Android Chat â€” Setup Guide
 
 ## 1. Firebase Setup
 
@@ -6,7 +6,7 @@
 2. Add an **Android app** with package name `com.androidchat.app`.
 3. Download `google-services.json` and replace `app/google-services.json`.
 4. Enable the following services:
-   - **Authentication → Email/Password**
+   - **Authentication â†’ Email/Password**
    - **Firestore Database** (start in production mode, then apply `firestore.rules`)
    - **Firebase Storage** (apply `storage.rules`)
    - **Cloud Messaging** (enabled by default)
@@ -41,11 +41,11 @@ firebase deploy --only firestore:rules,storage
 
 ## 3. GitHub Actions Cleanup
 
-1. Go to your GitHub repo → **Settings → Secrets and variables → Actions**.
+1. Go to your GitHub repo â†’ **Settings â†’ Secrets and variables â†’ Actions**.
 2. Add two secrets:
-   - `FIREBASE_PROJECT_ID` — your Firebase project ID (e.g. `my-chat-app-12345`)
-   - `FIREBASE_SERVICE_ACCOUNT_KEY` — paste the full JSON content of a Firebase service account key
-     (create one at Firebase Console → Project Settings → Service Accounts → Generate new private key)
+   - `FIREBASE_PROJECT_ID` â€” your Firebase project ID (e.g. `my-chat-app-12345`)
+   - `FIREBASE_SERVICE_ACCOUNT_KEY` â€” paste the full JSON content of a Firebase service account key
+     (create one at Firebase Console â†’ Project Settings â†’ Service Accounts â†’ Generate new private key)
 3. The workflow runs automatically every day at **02:00 UTC**.
    You can also trigger it manually from the **Actions** tab.
 
@@ -53,38 +53,39 @@ firebase deploy --only firestore:rules,storage
 
 ```bash
 # Open the project in Android Studio
-# File → Open → select the "Android Chat" folder
-# Wait for Gradle sync, then Run ▶
+# File â†’ Open â†’ select the "Android Chat" folder
+# Wait for Gradle sync, then Run â–¶
 ```
 
 ## Architecture Overview
 
 ```
 User sends text message:
-  ChatActivity → ChatViewModel → ChatRepository
-    → Room (saved locally, status=SENDING)
-    → FirebaseRepository → Firestore /messages/{id}
-    → Room (status=SENT)
+  ChatActivity â†’ ChatViewModel â†’ ChatRepository
+    â†’ Room (saved locally, status=SENDING)
+    â†’ FirebaseRepository â†’ Firestore /messages/{id}
+    â†’ Room (status=SENT)
 
 User receives message (Firestore listener):
   FirebaseRepository.listenForIncomingMessages()
-    → ChatRepository.handleIncomingMessage()
-      → if voice: download from Storage → save to /filesDir/voice_notes/
-      → Room (saved locally, status=DELIVERED)
-      → Firestore: mark consumed=true
-      → Storage blob deleted immediately after download
+    â†’ ChatRepository.handleIncomingMessage()
+      â†’ if voice: download from Storage â†’ save to /filesDir/voice_notes/
+      â†’ Room (saved locally, status=DELIVERED)
+      â†’ Firestore: mark consumed=true
+      â†’ Storage blob deleted immediately after download
 
 GitHub Actions (02:00 UTC daily):
   scripts/firebase-cleanup.js
-    → Delete consumed Firestore docs older than 24h
-    → Delete stale undelivered docs older than 48h
-    → Delete Storage blobs older than 24h (safety net)
+    â†’ Delete consumed Firestore docs older than 24h
+    â†’ Delete stale undelivered docs older than 48h
+    â†’ Delete Storage blobs older than 24h (safety net)
 ```
 
 ## Ad Unit Placement Map
 
 | Screen | Location | Ad Type |
 |--------|----------|---------|
-| Conversations list | Bottom of screen, above keyboard | Banner (320×50) |
-| Chat screen | Bottom of screen, above input bar | Banner (320×50) |
+| Conversations list | Bottom of screen, above keyboard | Banner (320Ã—50) |
+| Chat screen | Bottom of screen, above input bar | Banner (320Ã—50) |
 | App launch | After login / on cold start | Interstitial (full-screen) |
+

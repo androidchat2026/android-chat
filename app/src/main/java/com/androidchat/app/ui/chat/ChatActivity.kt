@@ -40,6 +40,8 @@ class ChatActivity : AppCompatActivity() {
     private var recorder: MediaRecorder? = null
     private var voiceFile: File? = null
     private var recordingStartMs = 0L
+    // 50 s max keeps base64-encoded audio safely under Firestore's 1 MB document limit
+    private val MAX_RECORDING_MS = 50_000L
 
     // Playback
     private var player: ExoPlayer? = null
@@ -135,6 +137,9 @@ class ChatActivity : AppCompatActivity() {
         }
         recordingStartMs = SystemClock.elapsedRealtime()
         binding.tvRecording.visibility = View.VISIBLE
+
+        // Auto-stop at 50 s to stay within Firestore 1 MB document limit
+        binding.btnVoice.postDelayed({ stopAndSendRecording() }, MAX_RECORDING_MS)
     }
 
     private fun stopAndSendRecording() {
