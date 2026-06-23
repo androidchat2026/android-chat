@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
@@ -15,8 +16,8 @@
         <ImageView
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:layout_marginBottom="32dp"
-            android:src="@drawable/ic_notification"
+            android:layout_marginBottom="16dp"
+            android:src="@mipmap/ic_launcher"
             android:contentDescription="Logo" />
 
         <TextView
@@ -28,32 +29,61 @@
             android:textSize="28sp"
             android:textStyle="bold" />
 
+        <!-- Email -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="Email Address"
+            android:textColor="@color/primary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            app:boxStrokeColor="@color/primary"
+            app:hintTextColor="@color/primary">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/email"
-                android:inputType="textEmailAddress" />
+                android:hint="example@email.com"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/black"
+                android:textColorHint="@color/text_secondary" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Password -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="Password"
+            android:textColor="@color/primary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:passwordToggleEnabled="true"
-            xmlns:app="http://schemas.android.com/apk/res-auto">
+            app:boxStrokeColor="@color/primary"
+            app:hintTextColor="@color/primary">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/password"
-                android:inputType="textPassword" />
+                android:hint="Enter your password"
+                android:inputType="textPassword"
+                android:textColor="@color/black"
+                android:textColorHint="@color/text_secondary" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <ProgressBar
@@ -67,16 +97,16 @@
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/login"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            android:text="@string/login" />
 
         <TextView
             android:id="@+id/tvRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="8dp"
             android:text="@string/dont_have_account"
-            android:textColor="@color/primary"
-            android:padding="8dp" />
+            android:textColor="@color/primary" />
 
     </LinearLayout>
 </ScrollView>
